@@ -52,7 +52,9 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
   }
   defer resp.Body.Close()
 
-  err = json.NewDecoder(resp.Body).Decode(v)
+  if resp.StatusCode != 404 {
+    err = json.NewDecoder(resp.Body).Decode(v)
+  }
 
   return resp, err
 }

@@ -41,6 +41,10 @@ func (s *BlogService) GetBlog(username string) (*Blog, *http.Response, error) {
     return nil, nil, err
   }
 
+  if response.Response["blog"] == nil {
+    return nil, resp, nil
+  }
+
   err = json.Unmarshal(response.Response["blog"], &blog)
   if err != nil {
     return nil, nil, err

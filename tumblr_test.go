@@ -30,3 +30,12 @@ func Test_Blog_GetBlog(t *testing.T) {
 
   assert.Equal(t, username, blog.Name)
 }
+
+func Test_Blog_Get404Blog(t *testing.T) {
+  username := "asfasfasdfasdfadfasdfasfd"
+  blog, resp, err := client.Blogs.GetBlog(username)
+  assert.Nil(t, blog)
+  assert.Nil(t, err)
+
+  assert.Equal(t, 404, resp.StatusCode)
+}
