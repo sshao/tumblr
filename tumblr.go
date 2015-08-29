@@ -41,9 +41,14 @@ func (c *Client) NewRequest(method, url_str string, body interface{}) (*http.Req
 }
 
 func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
-  resp, err := oauthClient.Get(c.client, c.Credentials, req.URL.String(), nil)
+  err := oauthClient.SetAuthorizationHeader(req.Header, c.Credentials, req.Method, req.URL, nil)
   if err != nil {
     return nil, err
+  }
+
+  resp, err := c.client.Do(req)
+  if err != nil {
+    return resp, err
   }
   defer resp.Body.Close()
 
