@@ -36,27 +36,28 @@ type ErrorResponse struct {
 }
 
 func (c *Client) NewRequest(method, url_str string, body interface{}) (*http.Request, error) {
-  rel, err := url.Parse(url_str)
+  parsed_url, err := url.Parse(url_str)
   if err != nil {
     return nil, err
   }
 
-  url := c.BaseURL.ResolveReference(rel)
+  full_url := c.BaseURL.ResolveReference(parsed_url)
 
-  req, err := http.NewRequest(method, url.String(), nil)
+  req, err := http.NewRequest(method, full_url.String(), nil)
   if err != nil {
     return nil, err
   }
+
   return req, nil
 }
 
-func (c *Client) Do(req *http.Request, key string, v interface{}) (*http.Response, error) {
-  err := oauthClient.SetAuthorizationHeader(req.Header, c.Credentials, req.Method, req.URL, nil)
+func (c *Client) Do(request *http.Request, key string, v interface{}) (*http.Response, error) {
+  err := oauthClient.SetAuthorizationHeader(request.Header, c.Credentials, request.Method, request.URL, nil)
   if err != nil {
     return nil, err
   }
 
-  resp, err := c.client.Do(req)
+  resp, err := c.client.Do(request)
   if err != nil {
     return resp, err
   }
@@ -107,7 +108,7 @@ func SetConsumerSecret(consumer_secret string) {
 }
 
 func NewClient(access_token string, access_token_secret string) *Client{
-  base_url,_ := url.Parse("http://api.tumblr.com/v2/")
+  base_url, _ := url.Parse("http://api.tumblr.com/v2/")
 
   client := &Client{
     client: http.DefaultClient,
