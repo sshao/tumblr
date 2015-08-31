@@ -25,17 +25,18 @@ func Test_NewClient(t *testing.T) {
 
 func Test_Blog_GetBlog(t *testing.T) {
   username := "staff"
-  blog, _, err := client.Blogs.GetBlog(username)
-  assert.Nil(t, err)
+  blog, response, err := client.Blogs.GetBlog(username)
 
   assert.Equal(t, username, blog.Name)
+  assert.Equal(t, 200, response.StatusCode)
+  assert.Nil(t, err)
 }
 
 func Test_Blog_Get404Blog(t *testing.T) {
   username := "asfasfasdfasdfadfasdfasfd"
-  blog, resp, err := client.Blogs.GetBlog(username)
+  blog, response, err := client.Blogs.GetBlog(username)
+
   assert.Nil(t, blog)
   assert.Nil(t, err)
-
-  assert.Equal(t, 404, resp.StatusCode)
+  assert.Equal(t, 404, response.StatusCode)
 }

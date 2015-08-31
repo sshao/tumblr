@@ -79,6 +79,7 @@ func NewClient(access_token string, access_token_secret string) *Client{
   client := &Client{
     client: http.DefaultClient,
     BaseURL: base_url,
+
     Credentials: &oauth.Credentials{
       Token: access_token,
       Secret: access_token_secret,
