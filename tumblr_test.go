@@ -37,6 +37,6 @@ func Test_Blog_Get404Blog(t *testing.T) {
   blog, response, err := client.Blogs.GetBlog(username)
 
   assert.Nil(t, blog)
-  assert.Nil(t, err)
+  assert.Equal(t, "Not Found", err.Error())
   assert.Equal(t, 404, response.StatusCode)
 }

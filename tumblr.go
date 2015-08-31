@@ -2,6 +2,7 @@ package gotumblr
 
 import(
   "encoding/json"
+  "errors"
   "net/http"
   "net/url"
   "github.com/garyburd/go-oauth/oauth"
@@ -25,6 +26,15 @@ type Response struct {
   Response map[string]json.RawMessage
 }
 
+type ErrorResponse struct {
+  Meta struct {
+    Status int
+    Msg string
+  }
+
+  Response []string
+}
+
 func (c *Client) NewRequest(method, url_str string, body interface{}) (*http.Request, error) {
   rel, err := url.Parse(url_str)
   if err != nil {
@@ -40,7 +50,7 @@ func (c *Client) NewRequest(method, url_str string, body interface{}) (*http.Req
   return req, nil
 }
 
-func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
+func (c *Client) Do(req *http.Request, key string, v interface{}) (*http.Response, error) {
   err := oauthClient.SetAuthorizationHeader(req.Header, c.Credentials, req.Method, req.URL, nil)
   if err != nil {
     return nil, err
@@ -52,11 +62,34 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
   }
   defer resp.Body.Close()
 
-  if resp.StatusCode != 404 {
-    err = json.NewDecoder(resp.Body).Decode(v)
+  err = CheckResponse(resp)
+  if err != nil {
+    return resp, err
   }
 
+  vResp := new(Response)
+  err = json.NewDecoder(resp.Body).Decode(&vResp)
+  if err != nil {
+    return resp, err
+  }
+
+  err = json.Unmarshal(vResp.Response[key], &v)
+
   return resp, err
+}
+
+func CheckResponse(response *http.Response) error {
+  if response.StatusCode != 404 {
+    return nil
+  }
+
+  error_response := new(ErrorResponse)
+  err := json.NewDecoder(response.Body).Decode(&error_response)
+  if err != nil {
+    return err
+  }
+
+  return errors.New(error_response.Meta.Msg)
 }
 
 var oauthClient = oauth.Client{

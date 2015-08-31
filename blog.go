@@ -1,7 +1,6 @@
 package gotumblr
 
 import(
-  "encoding/json"
   "net/http"
   "fmt"
 )
@@ -36,17 +35,7 @@ func (s *BlogService) GetBlog(username string) (*Blog, *http.Response, error) {
   }
 
   blog := new(Blog)
-  response := new(Response)
-  resp, err := s.client.Do(req, &response)
-  if err != nil {
-    return nil, resp, err
-  }
-
-  if response.Response["blog"] == nil {
-    return nil, resp, nil
-  }
-
-  err = json.Unmarshal(response.Response["blog"], &blog)
+  resp, err := s.client.Do(req, "blog", &blog)
   if err != nil {
     return nil, resp, err
   }
