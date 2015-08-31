@@ -29,6 +29,7 @@ type Blog struct {
 
 func (s *BlogService) GetBlog(username string) (*Blog, *http.Response, error) {
   username_url := fmt.Sprintf("blog/%s.tumblr.com/info", username)
+
   req, err := s.client.NewRequest("GET", username_url, nil)
   if err != nil {
     return nil, nil, err
@@ -38,7 +39,7 @@ func (s *BlogService) GetBlog(username string) (*Blog, *http.Response, error) {
   response := new(Response)
   resp, err := s.client.Do(req, &response)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   if response.Response["blog"] == nil {
@@ -47,7 +48,7 @@ func (s *BlogService) GetBlog(username string) (*Blog, *http.Response, error) {
 
   err = json.Unmarshal(response.Response["blog"], &blog)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return blog, resp, err
