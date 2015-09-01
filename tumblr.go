@@ -23,7 +23,7 @@ type Response struct {
     Msg string
   }
 
-  Response map[string]json.RawMessage
+  Response json.RawMessage
 }
 
 type ErrorResponse struct {
@@ -74,7 +74,14 @@ func (c *Client) Do(request *http.Request, key string, v interface{}) (*http.Res
     return resp, err
   }
 
-  err = json.Unmarshal(vResp.Response[key], &v)
+  if key != "" {
+    m := make(map[string]json.RawMessage)
+    err = json.Unmarshal(vResp.Response, &m)
+    // TODO check another goddamn error
+    err = json.Unmarshal(m[key], &v)
+  } else {
+    err = json.Unmarshal(vResp.Response, &v)
+  }
 
   return resp, err
 }

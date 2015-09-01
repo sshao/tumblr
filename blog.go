@@ -42,3 +42,24 @@ func (s *BlogService) GetBlog(username string) (*Blog, *http.Response, error) {
 
   return blog, resp, err
 }
+
+type Avatar struct {
+  AvatarUrl string `json:"avatar_url"`
+}
+
+func (s *BlogService) GetAvatar(username string) (*Avatar, *http.Response, error) {
+  avatar_url := fmt.Sprintf("blog/%s.tumblr.com/avatar", username)
+
+  req, err := s.client.NewRequest("GET", avatar_url, nil)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  avatar := new(Avatar)
+  resp, err := s.client.Do(req, "", &avatar)
+  if err != nil {
+    return nil, resp, err
+  }
+
+  return avatar, resp, err
+}

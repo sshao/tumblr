@@ -40,3 +40,13 @@ func Test_Blog_Get404Blog(t *testing.T) {
   assert.Equal(t, "Not Found", err.Error())
   assert.Equal(t, 404, response.StatusCode)
 }
+
+func Test_Blog_GetAvatar(t *testing.T) {
+  username := "staff"
+
+  avatar, response, err := client.Blogs.GetAvatar(username)
+
+  assert.Nil(t, err)
+  assert.Equal(t, "asdf", avatar)
+  assert.Equal(t, 200, response.StatusCode)
+}
