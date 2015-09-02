@@ -79,3 +79,32 @@ func (s *BlogService) GetAvatarOfSize(username string, size int) (*Avatar, *http
 
 	return avatar, resp, err
 }
+
+type User struct {
+	Name      string
+	Following bool
+	Url       string
+	Updated   int
+}
+
+type Followers struct {
+	TotalUsers int    `json:"total_users"`
+	Users      []User `json:"users"`
+}
+
+func (s *BlogService) GetFollowers(username string) (*Followers, *http.Response, error) {
+	followers_url := fmt.Sprintf("blog/%s.tumblr.com/followers", username)
+
+	req, err := s.client.NewRequest("GET", followers_url, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	followers := new(Followers)
+	resp, err := s.client.Do(req, "", &followers)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return followers, resp, err
+}

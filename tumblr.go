@@ -98,7 +98,7 @@ func (c *Client) Do(request *http.Request, key string, v interface{}) (*http.Res
 }
 
 func CheckResponse(response *http.Response) error {
-	if response.StatusCode != 404 {
+	if response.StatusCode < 400 {
 		return nil
 	}
 

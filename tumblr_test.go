@@ -60,3 +60,15 @@ func Test_Blog_GetAvatarOfSize(t *testing.T) {
 	assert.Equal(t, "https://38.media.tumblr.com/avatar_223db1c49305_512.png", avatar.AvatarUrl)
 	assert.Equal(t, 301, response.StatusCode)
 }
+
+// FIXME this test fails bc it requires having the credentials
+// to the account being tested
+func Test_Blog_GetFollowers(t *testing.T) {
+	username := "staff"
+
+	followers, response, err := client.Blogs.GetFollowers(username)
+
+	assert.Nil(t, err)
+	assert.Equal(t, 0, followers.TotalUsers)
+	assert.Equal(t, 200, response.StatusCode)
+}
