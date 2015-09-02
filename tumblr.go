@@ -8,6 +8,8 @@ import(
   "github.com/garyburd/go-oauth/oauth"
 )
 
+var RedirectAttemptedError = errors.New("redirect")
+
 type Client struct {
   client *http.Client
 
@@ -58,9 +60,18 @@ func (c *Client) Do(request *http.Request, key string, v interface{}) (*http.Res
   }
 
   resp, err := c.client.Do(request)
+
+  // check for redirect since the avatar resource tries to redirect
+  urlError, ok := err.(*url.Error)
+  if ok && urlError.Err == RedirectAttemptedError{
+    roundtripper := &http.Transport{}
+    resp, err = roundtripper.RoundTrip(request)
+  }
+
   if err != nil {
     return resp, err
   }
+
   defer resp.Body.Close()
 
   err = CheckResponse(resp)
@@ -125,6 +136,10 @@ func NewClient(access_token string, access_token_secret string) *Client{
       Token: access_token,
       Secret: access_token_secret,
     },
+  }
+
+  client.client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
+    return RedirectAttemptedError
   }
 
   client.Blogs = &BlogService{client: client}
