@@ -50,3 +50,13 @@ func Test_Blog_GetAvatar(t *testing.T) {
   assert.Equal(t, "https://33.media.tumblr.com/avatar_223db1c49305_64.png", avatar.AvatarUrl)
   assert.Equal(t, 301, response.StatusCode)
 }
+
+func Test_Blog_GetAvatarOfSize(t *testing.T) {
+  username := "staff"
+
+  avatar, response, err := client.Blogs.GetAvatarOfSize(username, 512)
+
+  assert.Nil(t, err)
+  assert.Equal(t, "https://38.media.tumblr.com/avatar_223db1c49305_512.png", avatar.AvatarUrl)
+  assert.Equal(t, 301, response.StatusCode)
+}

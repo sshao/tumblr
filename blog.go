@@ -63,3 +63,20 @@ func (s *BlogService) GetAvatar(username string) (*Avatar, *http.Response, error
 
   return avatar, resp, err
 }
+
+func (s *BlogService) GetAvatarOfSize(username string, size int) (*Avatar, *http.Response, error) {
+  avatar_url := fmt.Sprintf("blog/%s.tumblr.com/avatar/%d", username, size)
+
+  req, err := s.client.NewRequest("GET", avatar_url, nil)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  avatar := new(Avatar)
+  resp, err := s.client.Do(req, "", &avatar)
+  if err != nil {
+    return nil, resp, err
+  }
+
+  return avatar, resp, err
+}
