@@ -1,11 +1,11 @@
-package gotumblr_test
+package tumblr_test
 
 import (
 	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
 
-	"github.com/sshao/gotumblr"
+	"github.com/sshao/tumblr"
 )
 
 var CONSUMER_KEY = os.Getenv("OAUTH_CONSUMER")
@@ -13,12 +13,12 @@ var CONSUMER_SECRET = os.Getenv("OAUTH_SECRET")
 var ACCESS_TOKEN = os.Getenv("OAUTH_TOKEN")
 var ACCESS_TOKEN_SECRET = os.Getenv("OAUTH_TOKEN_SECRET")
 
-var client *gotumblr.Client
+var client *tumblr.Client
 
 func Test_NewClient(t *testing.T) {
-	gotumblr.SetConsumerKey(CONSUMER_KEY)
-	gotumblr.SetConsumerSecret(CONSUMER_SECRET)
-	client = gotumblr.NewClient(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+	tumblr.SetConsumerKey(CONSUMER_KEY)
+	tumblr.SetConsumerSecret(CONSUMER_SECRET)
+	client = tumblr.NewClient(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 
 	assert.NotNil(t, client.Credentials)
 }

@@ -1,4 +1,4 @@
-package gotumblr
+package tumblr
 
 import (
 	"fmt"
